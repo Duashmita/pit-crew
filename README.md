@@ -81,6 +81,17 @@ Optional: put `ANTHROPIC_API_KEY=...` in `.env` for the live diagnosis loop. Wit
 
 See `../pit-crew-features.md` for the feature list with a check and expected output per feature; `smoke.py` runs them. Run `make smoke` and read the PASS lines.
 
+## Next steps
+
+- **A real car.** The car is already an MCP server with OBD-shaped tools. Point `car/server.py` at python-OBD and a $15 ELM327 adapter and the rest of the app does not change.
+- **Real alerts.** Put Twilio behind `POST /api/alerts` for SMS and use the phone's GPS for the pin. The consent model stays: per-alert toggle, settings switch, she approves anything that leaves.
+- **Every situation end to end.** Eight situations exist in the mock (overheating, loose gas cap, flat tire, weak battery, stall, crash, the misfire before and after the swap). Only the misfire has a full diagnosis, step spec and animation; the others need their fixtures, specs and drawings.
+- **A bigger rulebook, as a public good.** The Prolog rules cover eight warning-light signals from three manufacturers' manuals. Encode more manufacturers with the `rules-encoder` agent and publish the rulebook so a nonprofit or a roadside-assistance line can plug it in.
+- **The eval.** Run the kit's `eval-builder` agent: 20 synthetic cars, Claude alone versus Claude plus the rulebook, and put the table here.
+- **Live Watch mode.** `DIAGNOSE_MODE=live` runs the real diagnosis loop today. Measure its latency, pin the good transcripts as fixtures, and let the live loop handle the situations the fixtures do not cover.
+- **Voice.** She is on the roadside with her hands on the car. Speech in and out on the Ask thread.
+- **Phone first.** The UI is already phone-sized. Ship it as a PWA with the SOS pill and the crash countdown working from the lock screen.
+
 ## Team
 
 Ashmita Dua, solo, with Claude Code.
