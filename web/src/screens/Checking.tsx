@@ -62,9 +62,9 @@ export function Log({ log }: { log: AgentEvent[] }) {
 export default function Checking({ log, busy, up }: { log: AgentEvent[]; busy: boolean; up: boolean }) {
   return (
     <div className="phone-body">
-      <span className={`chip ${busy ? 'pulse' : ''} ${up ? '' : 'down'}`}><span className="dot" />{busy ? 'Asking the car' : "Maya's car, connected"}</span>
-      <h1 className="h1" style={{ fontSize: 22, marginTop: 22 }}>Listening to the car's computer</h1>
-      <p className="muted small" style={{ marginTop: 0 }}>Each line is one question Claude asked the car.</p>
+      <span className={`chip ${busy ? 'pulse' : ''} ${up ? '' : 'down'}`}><span className="dot" />{busy ? 'Checking the car' : "Maya's car, connected"}</span>
+      <h1 className="h1" style={{ fontSize: 22, marginTop: 22 }}>Listening to your car</h1>
+      <p className="muted small" style={{ marginTop: 0 }}>Each line is one thing I asked the car. This takes a few seconds.</p>
       <Log log={log} />
       {busy && !log.length && <div className="muted" style={{ marginTop: 12 }}>Connecting…</div>}
       <div className="ai-notice">AI was used.</div>

@@ -33,9 +33,9 @@ export default function Home({ up, onAsk, onOpenAsk, onSettings }: {
         <span className={`chip ${up ? '' : 'down'}`}><span className="dot" />{up ? "Maya's car, connected" : 'backend starting'}</span>
         <button className="btn ghost sm" aria-label="Settings" onClick={onSettings}><Gear /></button>
       </div>
-      <h1 className="h1" style={{ marginTop: 30 }}>Hi Maya</h1>
-      <p className="muted" style={{ margin: '0 0 12px' }}>What's going on with the car?</p>
-      <textarea className="ask" value={words} onChange={(e) => setWords(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(words) } }} placeholder="Say it the way you'd tell a friend. Add a photo if you have one." aria-label="What's going on with the car" />
+      <h1 className="h1" style={{ marginTop: 30 }}>Hi Maya, I'm here.</h1>
+      <p className="muted" style={{ margin: '0 0 12px' }}>What's going on with the car? Tell me what you feel, hear or see.</p>
+      <textarea className="ask" value={words} onChange={(e) => setWords(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(words) } }} placeholder="Say it the way you'd tell a friend" aria-label="What's going on with the car" />
       {photo && (
         <div className="ask-preview">
           <img src={photo.dataUrl} alt="Photo to send" />
@@ -52,7 +52,7 @@ export default function Home({ up, onAsk, onOpenAsk, onSettings }: {
       <div className="suggest" style={{ marginTop: 20 }}>
         {CHIPS.map((c) => <button className="chip" key={c} onClick={() => send(c)}>{c}</button>)}
       </div>
-      <p className="small muted" style={{ margin: '14px 0 0' }}>A description starts a check of the car. A question or a photo starts a conversation.</p>
+      <p className="small muted" style={{ margin: '14px 0 0' }}>Describe it and I'll check the car for you. Ask a question or add a photo and we'll talk it through.</p>
       <div className="ai-notice">AI was used. Simulated car. The safety call comes from a rulebook you can read.</div>
     </div>
   )

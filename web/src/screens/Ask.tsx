@@ -71,12 +71,12 @@ export default function Ask({ onAlert, tools = [], onStart, seed = null }: { onA
   return (
     <div className="ask-screen">
       <div className="row ask-head">
-        <span className="small muted">Ask in your own words, with a photo if you have one.</span>
+        <span className="small muted">Ask me anything, in your own words. A photo helps.</span>
         <span className={`pill ${mode === 'live' ? 'live' : mode === 'fixture' ? 'off' : ''}`}>{mode === 'live' ? 'live' : mode === 'fixture' ? 'offline demo' : 'ready'}</span>
       </div>
       <div className="thread" role="log" aria-live="polite">
         {thread.length === 0 && (
-          <div className="bubble ai intro">Tell me what the car is doing, or show me. I can read the car's computer while we talk, and I'll say plainly if the rulebook says to stop.</div>
+          <div className="bubble ai intro">Tell me what the car is doing, or show me a photo. I can read the car while we talk, and I'll tell you straight if it isn't safe to drive.</div>
         )}
         {thread.map((b, i) => (
           <div key={i} className={`bubble ${b.role === 'user' ? 'me' : 'ai'} ${b.error ? 'err' : ''}`}>
