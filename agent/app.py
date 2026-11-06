@@ -26,7 +26,7 @@ async def sse():
     return events.stream()
 
 
-for _name in ("diagnose", "safety", "shops"):
+for _name in ("diagnose", "safety", "shops", "chat"):
     try:
         app.include_router(importlib.import_module(f"agent.{_name}").router)
     except Exception as e:  # a lane that isn't ready yet must not take the app down
