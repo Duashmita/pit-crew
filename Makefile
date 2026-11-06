@@ -1,4 +1,4 @@
-.PHONY: dev smoke smoke-live test
+.PHONY: dev smoke smoke-live test demo-test
 PY=.venv/bin/python
 
 dev:
@@ -13,3 +13,6 @@ smoke-live:
 test:
 	$(PY) -m pytest -q car agent || true
 	swipl -g run_tests -t halt triage/test_triage.pl
+
+demo-test:
+	$(PY) demo/clickthrough.py http://localhost:5174/ demo/shots
