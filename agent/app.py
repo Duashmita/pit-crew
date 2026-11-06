@@ -18,7 +18,7 @@ async def _startup() -> None:
 
 @app.get("/api/health")
 def health() -> dict:
-    return {"ok": True, "mode": state.mode()}
+    return {"ok": True, "mode": state.mode(), "chat": state.chat_mode()}
 
 
 @app.get("/api/events")

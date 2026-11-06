@@ -14,7 +14,13 @@ load_dotenv(ROOT / ".env")
 
 
 def mode() -> str:
-    return os.environ.get("DIAGNOSE_MODE") or ("live" if os.environ.get("ANTHROPIC_API_KEY") else "fixture")
+    """watch flow and svg render: scripted unless DIAGNOSE_MODE=live is set explicitly (the demo stays deterministic)."""
+    return os.environ.get("DIAGNOSE_MODE") or "fixture"
+
+
+def chat_mode() -> str:
+    """ask flow: live whenever a key exists."""
+    return "live" if os.environ.get("ANTHROPIC_API_KEY") else "fixture"
 
 
 def now() -> str:

@@ -164,7 +164,7 @@ def _fixture(msgs: list[dict], image: dict | None) -> dict:
 
 @router.post("/api/chat")
 def chat(body: ChatIn) -> dict:  # sync on purpose: runs in the threadpool, publish is thread-safe
-    if state.mode() == "live":
+    if state.chat_mode() == "live":
         try:
             out = _live(body.messages, body.image)
         except Exception as e:  # never let the demo die on the api
