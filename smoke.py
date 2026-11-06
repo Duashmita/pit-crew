@@ -233,6 +233,12 @@ def main() -> None:
             expect(all(x.get("sources") for x in q), "quote without sources")
         check("F4", "quotes: draft has the code, approval required, 3 replies, 1 flagged", f4)
 
+        def i2():
+            r = http("POST", "/api/chat", {"messages": [{"role": "user", "content": "it shakes and the light blinks"}], "image": None}, timeout=80)
+            expect(isinstance(r.get("reply"), str) and r["reply"], "no reply")
+            expect(r.get("mode") in ("live", "fixture") and isinstance(r.get("annotations"), list), f"shape {list(r)}")
+        check("I2", "chat: reply in the contract shape (" + env["DIAGNOSE_MODE"] + ")", i2)
+
         def g1():
             src = " ".join(p.read_text(errors="ignore") for p in (ROOT / "web/src").rglob("*.tsx"))
             expect("AI was used" in src, "no AI notice in web/src")

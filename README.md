@@ -43,6 +43,7 @@ flowchart LR
   agent -- sse --> web[web/ two phone frames]
 ```
 
+- **Two input states.** *Watch* is observational: Pit Crew reads the car and alerts her without being asked. *Ask* is conversational and live: she tells it what is wrong in her own words, attaches a photo, and Claude answers, reads the car mid-conversation when it needs to, and annotates the photo with numbered boxes.
 - **The car is an MCP server.** `car/server.py` exposes the car's computer as tools over stdio. Any Claude client can talk to it: `claude mcp add car -- .venv/bin/python -m car.server`. In the demo the car is a mock with five scenarios (misfire before and after the coil swap, stall, crash, ok).
 - **Claude questions the car like a mechanic.** The loop reads the warning lights and codes, then picks each next query from the evidence (misfire counts, freeze frame, fuel trims), ranks the causes and proposes the cheapest test that separates them, as a strict-schema step spec.
 - **The rulebook makes the safety call, not Claude.** `triage/triage.pl` turns published warning-light guidance into Prolog rules, each cited to the text in `sources/`, with plunit tests. The UI shows the rule that fired and its source. Unknown critical signals count as unsafe.
@@ -63,6 +64,7 @@ Optional: put `ANTHROPIC_API_KEY=...` in `.env` for the live diagnosis loop. Wit
 ## How we used Claude
 
 - `claude-opus-5-5` runs the diagnosis loop with tool use: the car's MCP tools, a `triage` tool that calls the Prolog rulebook, and a `propose_step` tool whose input schema is the step spec. Tool calls stream to the UI over SSE.
+- `claude-opus-5-5` also runs the live Ask mode: vision on her photo, the same car tools, the triage tool, and an `annotate_photo` tool whose strict schema is a list of boxes in normalized coordinates that the UI draws over the photo.
 - `claude-sonnet-5-5` renders an SVG only for a step the hand-drawn diagram cannot show, and only from a spec the gate approved; the SVG is sanitized and shown in a sandboxed iframe.
 - Claude Code built this in one morning: one planning session that froze the contracts and the UX spec in `CLAUDE.md`, then six parallel lanes (car, triage, backend-diagnose, backend-safety, web-shell, web-diagnosis) with disjoint file ownership, and a smoke script that checks every feature by number.
 
