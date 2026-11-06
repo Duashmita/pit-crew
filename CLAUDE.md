@@ -94,6 +94,13 @@ gate `check_spec(spec)` -> `{"approved": bool, "missing": [...], "required": [..
 - `POST /api/quotes/send {"shop_ids":[...],"approved":true}` -> `{"sent": n}`; approved false -> 400; generates replies into state.S["quotes"]; publishes `{"type":"quote","quote":{...}}` per reply with a 700 ms stagger (background task)
 - `GET /api/inbox` -> quotes `{"id","shop","total_usd","parts_usd","labor_usd","fair_range_usd":[low,high],"flag":"in_range"|"above_range","note":"...","sources":[...]}`; exactly one above_range at about 2.1x the high end
 
+### chat (conversational mode, live; agent/chat.py, lane backend-chat)
+- `POST /api/chat {"messages":[{"role":"user"|"assistant","content":str}], "image": {"media_type":"image/jpeg"|"image/png"|"image/webp","data":base64}|null}` -> `{"reply": str, "annotations": [{"label": str, "x": 0..1, "y": 0..1, "w": 0..1, "h": 0..1, "note": str}], "mode": "live"|"fixture", "tool_calls": [{"tool": str, "result": any}], "triage": triage output|null}`
+  annotations are boxes over the photo in normalized coordinates (x, y top-left; w, h), at most 6, numbered in order; the reply refers to them by number. the image is the last user message's photo, sent as an image content block.
+  live: anthropic sdk, model claude-opus-5-5, tools get_status, read_dtcs, misfire_counts, events (car), triage (triage/run.py; sets state.S["last_triage"] and publishes the triage event), annotate_photo (strict schema: the annotations list; only when an image was sent). system prompt: a calm mechanic who puts safety first, says plainly when the rulebook says to stop, never states a price without a source, says this is a simulated demo when asked, keeps replies under 120 words.
+  fixture (no key): a canned reply that says live chat needs an api key, and, if an image was sent, three canned annotations so the ui can be exercised; mode "fixture".
+  while running, publishes `{"type":"chat_tool","tool","result"}` per tool call and `{"type":"chat_reply","reply","annotations","mode"}` at the end.
+
 ### step spec
 `{"id":"swap-coils-1-2","title":"swap the coils on cylinders 1 and 2","parts":["coil 1","coil 2","coil connectors","coil bolts"],"actions":[{"verb":"unclip","target":"coil 1 connector"},{"verb":"remove","target":"coil 1 bolt"},{"verb":"lift","target":"coil 1"},{"verb":"swap","target":"coil 1 and coil 2"},{"verb":"reinstall","target":"both coils"}],"tools":["10 mm socket"],"precautions":["engine_off","engine_cool"],"expect":"misfire moves to cylinder 2","est_minutes":10,"cost_usd":0}`
 
@@ -127,6 +134,9 @@ Maya's phone (`state/machine.ts`: screen = home | checking | banner | diagnosis 
 Overlays: SOS tap -> Countdown 3 s "Sending to Priya in 3 [Cancel]" -> post trigger sos. car_event -> full-screen Countdown with countdown_s "Are you OK? Alerting Priya in 10 [I'm OK, cancel]" -> cancel posts /api/alerts/cancel; otherwise the backend sends the alert and the alert event arrives.
 
 Priya's phone (`components/shell/FriendPhone.tsx`): lock screen (time, soft gradient wallpaper). On an alert event a notification card slides down: "Pit Crew · now", "Maya needs you", the call and fault in plain words, a stylized svg map tile (no network) with a pin and a pulsing ring and the location label, "0.8 mi away", [Call her] [On my way] -> api.ack. After the ack the card shows "You're on your way". Location null -> "location not shared".
+
+## ux: the two input states (web, lane web-ask)
+Home gets a segmented control under the greeting: **Watch** | **Ask**. Watch is the observational state: everything above (chips, the car's data, alerts). Ask is the conversational state (`screens/Ask.tsx`, default `Ask({ onAlert })`): a chat thread inside Maya's phone. Input row at the bottom (above the SOS pill): a photo button (file input accept image/*, plus a "sample photo" button that loads /sample-engine.jpg when it exists), a text field "Tell it what's wrong", send. Photos are downscaled client-side to 1024 px max before sending as base64. Her bubble shows the photo. While the call runs, chat_tool events show as small "Reading the car…" chips under her bubble. Claude's reply is a bubble; when annotations come back, the photo bubble gets an SVG overlay (viewBox matches the image): coral boxes with numbered tags, and the reply's numbers match. If the response carries a triage that is not ok_to_drive, a compact coral strip appears above the input with the call and a [Tell Priya] button that calls onAlert (trigger verdict). A chip in the thread header says "live" or "offline demo" from the response mode. The AI notice stays on screen.
 
 ## gotchas
 append one line every time the orchestrator corrects a lane, so it doesn't happen twice.

@@ -1,4 +1,4 @@
-import type { AckAction, AgentEvent, Alert, CarSnapshot, FairPrice, Friend, GateResult, Quote, Scenario, Settings, Shop, StepSpec, Trigger } from '../types'
+import type { AckAction, AgentEvent, Alert, CarSnapshot, ChatImage, ChatMessage, ChatResponse, FairPrice, Friend, GateResult, Quote, Scenario, Settings, Shop, StepSpec, Trigger } from '../types'
 
 async function j<T>(r: Promise<Response>): Promise<T> {
   const res = await r
@@ -30,6 +30,8 @@ export const api = {
   draft: (shop_ids: string[]) => j<{ draft: string }>(post('/api/quotes/draft', { shop_ids })),
   send: (shop_ids: string[]) => j<{ sent: number }>(post('/api/quotes/send', { shop_ids, approved: true })),
   inbox: () => j<Quote[]>(fetch('/api/inbox')),
+  /** live conversational mode: her words plus an optional photo; claude answers and annotates the photo */
+  chat: (messages: ChatMessage[], image: ChatImage | null) => j<ChatResponse>(post('/api/chat', { messages, image })),
   /** subscribe to every backend event; returns an unsubscribe function */
   events: (onEvent: (e: AgentEvent) => void) => {
     const es = new EventSource('/api/events')

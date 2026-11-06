@@ -22,6 +22,10 @@ export interface Settings { share_location: boolean }
 export interface Shop { id: string; name: string; distance_km: number; open_until: string; phone: string; rating: number; synthetic: true }
 export interface FairPrice { part: string; parts_usd: [number, number]; labor_usd: [number, number]; fair_range_usd: [number, number]; sources: string[]; as_of: string }
 export interface Quote { id: string; shop: string; total_usd: number; parts_usd: number; labor_usd: number; fair_range_usd: [number, number]; flag: 'in_range' | 'above_range'; note: string; sources: string[] }
+export interface Annotation { label: string; x: number; y: number; w: number; h: number; note: string }
+export interface ChatMessage { role: 'user' | 'assistant'; content: string }
+export interface ChatImage { media_type: 'image/jpeg' | 'image/png' | 'image/webp'; data: string }
+export interface ChatResponse { reply: string; annotations: Annotation[]; mode: 'live' | 'fixture'; tool_calls: { tool: string; result: unknown }[]; triage: TriageResult | null }
 export type AgentEvent =
   | { type: 'text'; text: string }
   | { type: 'tool_call'; tool: string; args: Record<string, unknown>; result: unknown }
@@ -36,3 +40,5 @@ export type AgentEvent =
   | { type: 'alert_cancelled' }
   | { type: 'ack'; alert_id: string; by: string; action: AckAction }
   | { type: 'quote'; quote: Quote }
+  | { type: 'chat_tool'; tool: string; result: unknown }
+  | { type: 'chat_reply'; reply: string; annotations: Annotation[]; mode: 'live' | 'fixture' }
