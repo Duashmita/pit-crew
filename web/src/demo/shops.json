@@ -1,0 +1,5 @@
+[
+  { "id": "s1", "name": "Elm Street Auto", "distance_km": 1.2, "open_until": "6:00 PM", "phone": "+1 555 0141", "rating": 4.7, "synthetic": true },
+  { "id": "s2", "name": "Bayside Garage", "distance_km": 2.8, "open_until": "5:30 PM", "phone": "+1 555 0172", "rating": 4.4, "synthetic": true },
+  { "id": "s3", "name": "QuickFix Tire & Lube", "distance_km": 3.5, "open_until": "8:00 PM", "phone": "+1 555 0199", "rating": 4.1, "synthetic": true }
+]

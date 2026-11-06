@@ -22,9 +22,9 @@ export default function Home({ up, onAsk, onOpenAsk, onSettings }: {
   const [sample, setSample] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => { fetch('/sample-engine.jpg', { method: 'HEAD' }).then((r) => setSample(r.ok && (r.headers.get('content-type') ?? '').startsWith('image'))).catch(() => {}) }, [])
+  useEffect(() => { fetch(`${import.meta.env.BASE_URL}sample-engine.jpg`, { method: 'HEAD' }).then((r) => setSample(r.ok && (r.headers.get('content-type') ?? '').startsWith('image'))).catch(() => {}) }, [])
   const pick = async (file: Blob | null) => { if (file) { try { setPhoto(await shrink(file)) } catch { /* not an image */ } } }
-  const useSample = async () => { try { await pick(await (await fetch('/sample-engine.jpg')).blob()) } catch { /* missing */ } }
+  const useSample = async () => { try { await pick(await (await fetch(`${import.meta.env.BASE_URL}sample-engine.jpg`)).blob()) } catch { /* missing */ } }
   const send = (t: string) => { const w = t.trim(); if (!w && !photo) return; if (isQuestion(w, photo)) onOpenAsk(w, photo); else onAsk(w) }
 
   return (

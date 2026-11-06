@@ -8,7 +8,9 @@ async function j<T>(r: Promise<Response>): Promise<T> {
 const post = (url: string, body: unknown, method = 'POST') =>
   fetch(url, { method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
 
-export const api = {
+import { demoApi } from './demo'
+
+const live = {
   health: () => j<{ ok: boolean; mode: string }>(fetch('/api/health')),
   car: () => j<CarSnapshot>(fetch('/api/car')),
   setScenario: (name: Scenario) => j<CarSnapshot>(post('/api/car/scenario', { name })),
@@ -39,3 +41,6 @@ export const api = {
     return () => es.close()
   },
 }
+
+/** the hosted static demo (VITE_DEMO=1) runs the whole backend in the browser; otherwise the python backend on /api */
+export const api: typeof live = import.meta.env.VITE_DEMO === '1' ? (demoApi as unknown as typeof live) : live

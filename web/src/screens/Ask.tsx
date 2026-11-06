@@ -38,13 +38,13 @@ export default function Ask({ onAlert, tools = [], onStart, seed = null }: { onA
   const fileRef = useRef<HTMLInputElement>(null)
   const endRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { fetch('/sample-engine.jpg', { method: 'HEAD' }).then((r) => setSample(r.ok && (r.headers.get('content-type') ?? '').startsWith('image'))).catch(() => {}) }, [])
+  useEffect(() => { fetch(`${import.meta.env.BASE_URL}sample-engine.jpg`, { method: 'HEAD' }).then((r) => setSample(r.ok && (r.headers.get('content-type') ?? '').startsWith('image'))).catch(() => {}) }, [])
   // a first message from home is sent as soon as the thread opens (once, StrictMode-safe)
   useEffect(() => { if (!seeded.current && seed && !seed.context && (seed.text || seed.photo)) { seeded.current = true; send(seed.text, seed.photo ?? null) } }, [])  // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, [thread.length, busy, tools.length])
 
   const pick = async (file: Blob | null) => { if (file) { try { setPhoto(await shrink(file)) } catch { /* not an image */ } } }
-  const useSample = async () => { try { await pick(await (await fetch('/sample-engine.jpg')).blob()) } catch { /* missing */ } }
+  const useSample = async () => { try { await pick(await (await fetch(`${import.meta.env.BASE_URL}sample-engine.jpg`)).blob()) } catch { /* missing */ } }
 
   const send = async (wordsIn: string = text, photoIn: Photo | null = photo) => {
     const words = wordsIn.trim()

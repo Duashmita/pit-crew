@@ -1,0 +1,13 @@
+{
+  "part": "ignition coil",
+  "parts_usd": [50, 229],
+  "labor_usd": [72, 106],
+  "fair_range_usd": [150, 335],
+  "sources": [
+    "https://www.repairpal.com/estimator/ignition-coil-replacement-cost",
+    "https://www.jdpower.com/cars/shopping-guides/how-much-does-it-cost-to-replace-an-ignition-coil",
+    "https://www.synchrony.com/blog/automotive/ignition-coil-replacement-cost"
+  ],
+  "as_of": "2026-11",
+  "basis": "One coil, independent shop, all makes. RepairPal estimator: total $227 to $335 (parts $155 to $229, labor $72 to $106). J.D. Power: $100 to $300 for a single coil on a standard vehicle, about $150 to $350 with labor, parts $50 to $200+. Synchrony (citing RepairPal): $230 to $330, labor $75 to $100. Figures as summarized by web search on 2026-11-06; verify on the pages before quoting them on stage."
+}

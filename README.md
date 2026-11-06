@@ -4,6 +4,7 @@
 
 Code with Claude: Women in AI hackathon, Nov 6 2026. Track: Safety and rights.
 
+
 ## The problem
 
 Maya is 27, a home health aide, and her car is how she gets to the people she cares for. Tonight it is shaking at a red light and the check-engine light is flashing. Two things go wrong for women in that moment. The first is safety: being stuck with a car that should not be driven, alone, at night. The second is money: in a field study of auto repair quotes, women who did not mention a benchmark price were quoted significantly more than men, and the gap disappeared once a market price was mentioned ([Busse, Israeli and Zettelmeyer, NBER](https://www.nber.org/papers/w19154.pdf)).

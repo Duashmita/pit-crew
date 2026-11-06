@@ -1,0 +1,115 @@
+[
+ {
+  "type": "text",
+  "text": "Let me ask the car what it knows."
+ },
+ {
+  "type": "tool_call",
+  "tool": "get_status",
+  "args": {}
+ },
+ {
+  "type": "text",
+  "text": "Warning light on with one stored code. Reading it."
+ },
+ {
+  "type": "tool_call",
+  "tool": "read_dtcs",
+  "args": {}
+ },
+ {
+  "type": "text",
+  "text": "A cylinder 1 misfire. Counting misfires per cylinder to see if it's only that one."
+ },
+ {
+  "type": "tool_call",
+  "tool": "misfire_counts",
+  "args": {}
+ },
+ {
+  "type": "triage"
+ },
+ {
+  "type": "diagnosis",
+  "causes": [
+   {
+    "cause": "ignition coil 1",
+    "evidence": [
+     "P0301",
+     "12 misfires on cylinder 1, none elsewhere",
+     "rough idle around 740 rpm"
+    ],
+    "confidence": 0.6
+   },
+   {
+    "cause": "spark plug 1",
+    "evidence": [
+     "P0301",
+     "single-cylinder misfire"
+    ],
+    "confidence": 0.25
+   },
+   {
+    "cause": "fuel injector 1",
+    "evidence": [
+     "single-cylinder misfire",
+     "fuel trims look normal"
+    ],
+    "confidence": 0.1
+   }
+  ],
+  "summary": "One cylinder is misfiring and the light is flashing, so unburned fuel is reaching the exhaust. The cheapest test is to swap the coils on cylinders 1 and 2: if the misfire moves, it's the coil."
+ },
+ {
+  "type": "text",
+  "text": "Cheapest test first: swap two coils. It costs nothing and tells the coil from the plug."
+ },
+ {
+  "type": "step",
+  "spec": {
+   "id": "swap-coils-1-2",
+   "title": "swap the coils on cylinders 1 and 2",
+   "parts": [
+    "coil 1",
+    "coil 2",
+    "coil connectors",
+    "coil bolts"
+   ],
+   "actions": [
+    {
+     "verb": "unclip",
+     "target": "coil 1 connector"
+    },
+    {
+     "verb": "remove",
+     "target": "coil 1 bolt"
+    },
+    {
+     "verb": "lift",
+     "target": "coil 1"
+    },
+    {
+     "verb": "swap",
+     "target": "coil 1 and coil 2"
+    },
+    {
+     "verb": "reinstall",
+     "target": "both coils"
+    }
+   ],
+   "tools": [
+    "10 mm socket"
+   ],
+   "precautions": [
+    "engine_off",
+    "engine_cool"
+   ],
+   "expect": "misfire moves to cylinder 2",
+   "est_minutes": 10,
+   "cost_usd": 0
+  }
+ },
+ {
+  "type": "done"
+ }
+]
