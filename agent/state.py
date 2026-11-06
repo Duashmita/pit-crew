@@ -35,3 +35,10 @@ def save_json(name: str, obj) -> None:
 
 
 S: dict = {"last_triage": None, "last_diagnosis": None, "last_step": None, "alerts": [], "quotes": [], "pending_alert": None}
+
+
+def anthropic_client():
+    """one client for every lane. ANTHROPIC_WORKSPACE_ID (optional) scopes an org-level key to a workspace."""
+    import anthropic
+    ws = os.environ.get("ANTHROPIC_WORKSPACE_ID")
+    return anthropic.Anthropic(default_headers={"anthropic-workspace-id": ws} if ws else None)

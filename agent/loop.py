@@ -312,7 +312,7 @@ def _create(client, **kw):
 def _live(words: str, publish, delay_ms: int) -> list[dict]:
     import anthropic
 
-    client = anthropic.Anthropic()
+    client = state.anthropic_client()
     c, t = car(), triage_mod()
     out: list[dict] = []
 

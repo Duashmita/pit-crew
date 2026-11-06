@@ -34,7 +34,7 @@ def render(spec: dict) -> str:
     try:
         import anthropic
 
-        client = anthropic.Anthropic()
+        client = state.anthropic_client()
         resp = client.messages.create(model=RENDER_MODEL, max_tokens=8000, system=PROMPT,
                                       messages=[{"role": "user", "content": str(spec)}])
         text = "".join(b.text for b in resp.content if b.type == "text")

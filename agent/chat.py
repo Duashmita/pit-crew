@@ -114,7 +114,7 @@ def _api_messages(msgs: list[dict], image: dict | None) -> tuple[list[dict], str
 def _live(msgs: list[dict], image: dict | None) -> dict:
     import anthropic
 
-    client = anthropic.Anthropic()
+    client = state.anthropic_client()
     api_msgs, words = _api_messages(msgs, image)
     tools = _tools(image is not None)
     tool_calls: list[dict] = []
