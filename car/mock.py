@@ -15,6 +15,14 @@ SCENARIOS = {
     "stall": {"running": False, "cyl": "1", "rpm": 740, "coolant": 92, "events": [{"type": "engine_stall", "speed_kph": 45}]},
     "crash": {"running": False, "cyl": "1", "rpm": 740, "coolant": 92, "events": [{"type": "airbag_deployed"}]},
     "ok": {"running": True, "cyl": None, "rpm": 800, "coolant": 90, "events": []},
+    # fixes she can do herself, and warnings that are not a misfire. optional keys: mil, dtcs, warnings, battery_v
+    "overheating": {"running": True, "cyl": None, "rpm": 800, "coolant": 118, "events": [], "mil": True,
+                    "dtcs": [{"code": "P0217", "desc": "engine coolant over temperature"}], "warnings": ["temperature"]},
+    "gas_cap": {"running": True, "cyl": None, "rpm": 800, "coolant": 90, "events": [], "mil": True,
+                "dtcs": [{"code": "P0457", "desc": "evaporative system leak, fuel cap loose or off"}]},
+    "flat_tire": {"running": True, "cyl": None, "rpm": 800, "coolant": 90, "events": [], "warnings": ["tire_pressure"]},
+    "weak_battery": {"running": True, "cyl": None, "rpm": 800, "coolant": 90, "events": [], "battery_v": 11.6,
+                     "dtcs": [{"code": "P0562", "desc": "system voltage low"}], "warnings": ["charging"]},
 }
 ACTIONS = ("swap_coils_1_2", "engine_off", "engine_on")
 UNITS = {"RPM": "rpm", "SPEED": "kph", "COOLANT_TEMP": "C", "SHORT_FUEL_TRIM_1": "percent", "LONG_FUEL_TRIM_1": "percent", "THROTTLE_POS": "percent"}
@@ -43,12 +51,16 @@ def get_status() -> dict:
     sc = SCENARIOS[s["scenario"]]
     running = s["engine_running"]
     rpm = 0 if not running else sc["rpm"] + (random.randint(-30, 30) if sc["cyl"] else 0)
-    return {"mil_on": sc["cyl"] is not None, "dtc_count": len(read_dtcs()), "rpm": rpm, "speed_kph": 0,
-            "coolant_c": sc["coolant"], "engine_running": running, "scenario": s["scenario"]}
+    return {"mil_on": sc.get("mil", sc["cyl"] is not None), "dtc_count": len(read_dtcs()), "rpm": rpm, "speed_kph": 0,
+            "coolant_c": sc["coolant"], "engine_running": running, "scenario": s["scenario"],
+            "warnings": list(sc.get("warnings", [])), "battery_v": sc.get("battery_v", 12.6)}
 
 
 def read_dtcs() -> list:
-    cyl = _scenario()["cyl"]
+    sc = _scenario()
+    if "dtcs" in sc:
+        return [dict(d) for d in sc["dtcs"]]
+    cyl = sc["cyl"]
     return [] if cyl is None else [{"code": f"P030{cyl}", "desc": f"cylinder {cyl} misfire detected"}]
 
 
@@ -72,7 +84,8 @@ def misfire_counts() -> dict:
 
 def freeze_frame() -> dict:
     sc = _scenario()
-    return {"code": f"P030{sc['cyl']}" if sc["cyl"] else None, "rpm": sc["rpm"], "speed_kph": 0, "coolant_c": sc["coolant"], "load_pct": 22}
+    d = read_dtcs()
+    return {"code": d[0]["code"] if d else None, "rpm": sc["rpm"], "speed_kph": 0, "coolant_c": sc["coolant"], "load_pct": 22}
 
 
 def events() -> list:

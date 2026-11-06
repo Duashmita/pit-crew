@@ -50,3 +50,18 @@ def test_ok_and_errors():
     assert mock.set_scenario("nope")["error"] == "unknown scenario"
     assert mock.read_pid("NOPE") == {"error": "unknown pid"}
     assert mock.read_pid("COOLANT_TEMP") == {"name": "COOLANT_TEMP", "value": 90, "unit": "C"}
+
+
+def test_small_fix_scenarios():
+    mock.set_scenario("overheating")
+    st = mock.get_status()
+    assert st["mil_on"] and st["coolant_c"] == 118 and st["warnings"] == ["temperature"] and st["battery_v"] == 12.6
+    assert mock.read_dtcs()[0]["code"] == "P0217" and mock.freeze_frame()["code"] == "P0217"
+    mock.set_scenario("gas_cap")
+    assert mock.get_status()["mil_on"] and mock.read_dtcs()[0]["code"] == "P0457" and mock.get_status()["warnings"] == []
+    mock.set_scenario("flat_tire")
+    assert mock.get_status()["mil_on"] is False and mock.read_dtcs() == [] and mock.get_status()["warnings"] == ["tire_pressure"]
+    mock.set_scenario("weak_battery")
+    st = mock.get_status()
+    assert st["mil_on"] is False and st["battery_v"] == 11.6 and st["warnings"] == ["charging"] and mock.read_dtcs()[0]["code"] == "P0562"
+    assert mock.misfire_counts() == {"1": 0, "2": 0, "3": 0, "4": 0}

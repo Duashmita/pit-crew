@@ -19,6 +19,13 @@ test(unknown_mil_unsafe) :- triage(_{flashing: unknown, dtcs: []}, O), O.call ==
 test(dtc_objects_accepted) :- in(_{dtcs: [_{code: 'P0301', desc: 'cylinder 1 misfire detected'}]}, In), triage(In, O), O.rule == mil_flashing_misfire.
 test(every_rule_cited) :- rule_ids(Ids), forall(member(Id, Ids), cite(Id, _, _, _)).
 test(strictest_wins) :- in(_{flashing: no, coolant_c: 115}, In), triage(In, O), O.call == stop_now.
+test(temperature_warning_stop) :- in(_{flashing: no, dtcs: [], warnings: [temperature]}, In), triage(In, O), O.call == stop_now, O.rule == engine_overheating.
+test(overheat_beats_flashing_unknown) :- in(_{flashing: unknown, dtcs: ['P0217'], coolant_c: 118, warnings: [temperature]}, In), triage(In, O), O.rule == engine_overheating.
+test(tire_pressure_short_trip) :- in(_{mil_on: false, flashing: no, dtcs: [], warnings: [tire_pressure]}, In), triage(In, O), O.call == short_trip_only, O.rule == tire_pressure_warning.
+test(charging_warning_short_trip) :- in(_{mil_on: false, flashing: no, dtcs: ['P0562'], warnings: [charging], battery_v: 11.6}, In), triage(In, O), O.call == short_trip_only, O.rule == charging_warning.
+test(low_voltage_alone_short_trip) :- in(_{mil_on: false, flashing: no, dtcs: [], battery_v: 11.8}, In), triage(In, O), O.call == short_trip_only.
+test(fuel_cap_ok) :- in(_{flashing: no, dtcs: ['P0457']}, In), triage(In, O), O.call == ok_to_drive, O.rule == fuel_cap_loose.
+test(fuel_cap_flashing_still_stop) :- in(_{flashing: yes, dtcs: ['P0457']}, In), triage(In, O), O.call == stop_now.
 :- end_tests(triage).
 
 :- begin_tests(gate).

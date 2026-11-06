@@ -189,12 +189,18 @@ def build_triage_input(words: str, c=None) -> dict:
     if flashing != "unknown":
         state.S["flashing"] = flashing
     return {"mil_on": st["mil_on"], "flashing": flashing, "dtcs": [d["code"] for d in c.read_dtcs()],
-            "coolant_c": st["coolant_c"], "events": [e["type"] for e in c.events()], "symptoms": symptoms_from_words(words)}
+            "coolant_c": st["coolant_c"], "warnings": st.get("warnings", []), "battery_v": st.get("battery_v"),
+            "events": [e["type"] for e in c.events()], "symptoms": symptoms_from_words(words)}
 
 
 # ---------------------------------------------------------------- public entry
+FIXTURE_SCENARIOS = {"misfire_before_swap", "misfire_after_swap", "stall", "crash", "ok"}
+
+
 def run_diagnosis(words: str, publish, delay_ms: int = 600) -> list[dict]:
-    if state.mode() == "live":
+    scenario = car().get_status().get("scenario")
+    # the misfire demo path stays scripted; a scenario with no recording goes live when a key exists
+    if state.mode() == "live" or (scenario not in FIXTURE_SCENARIOS and state.chat_mode() == "live"):
         try:
             return _live(words, publish, delay_ms)
         except Exception as e:  # never let the demo die on the api
@@ -206,7 +212,7 @@ def run_diagnosis(words: str, publish, delay_ms: int = 600) -> list[dict]:
 # ---------------------------------------------------------------- fixture replay
 def _variant(c) -> str:
     s = c.get_status()["scenario"]
-    return {"misfire_after_swap": "after_swap", "stall": "event", "crash": "event", "ok": "ok"}.get(s, "before_swap")
+    return {"misfire_before_swap": "before_swap", "misfire_after_swap": "after_swap", "stall": "event", "crash": "event"}.get(s, "ok")
 
 
 def _fixture(words: str, publish, delay_ms: int) -> list[dict]:
@@ -261,7 +267,13 @@ SYSTEM = (
     "2) call report_diagnosis with the likely causes ranked, each with its evidence; 3) call propose_step with the "
     "cheapest test that separates the top causes, as a complete step spec whose precautions include engine_off and "
     "engine_cool for any ignition part. Never state a price. If her words say the test was done, read the car again "
-    "and report what moved. Narrate at most one short sentence before a tool call. After propose_step, stop."
+    "and report what moved. Narrate at most one short sentence before a tool call. After propose_step, stop. "
+    "Use plain words; the first time you use a code or a part name, add a short explanation in parentheses. "
+    "Every proposed step lists the precautions the gate requires for its part family: ignition (coil, plug, connector) "
+    "engine_off and engine_cool; fuel system including the fuel cap engine_off and no_flame; battery key_out and "
+    "negative_first; tires parking_brake and wheel_chocks. If the fix is one she can do herself (tighten the fuel cap, "
+    "add air to a tire, let the engine cool and top up coolant, swap two coils), say so and keep it to one step. "
+    "When the rulebook says stop_now, say so first, before anything else."
 )
 
 _NOARGS = {"type": "object", "properties": {}, "additionalProperties": False}

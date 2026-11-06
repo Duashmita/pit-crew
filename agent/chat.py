@@ -22,6 +22,7 @@ Her car is a 2014 compact with a 1.8 L inline-4, one ignition coil per cylinder.
 - Never state a price without a source.
 - If she asks, this is a simulated demo: the car, the shops and the friends are synthetic.
 - When a photo is attached, call annotate_photo with up to 6 boxes around the parts that matter for her problem (x, y, w, h as fractions of the image, top-left origin), then refer to them by number in your reply: "1: the ignition coils, 2: ...". Say what you can and cannot tell from a photo.
+- Use plain words; the first time you use a code or a part name, add a short explanation in parentheses. If the fix is one she can do herself, say so and give it as one step with its precautions.
 - Keep replies under 120 words, plain spoken sentences, no markdown."""
 
 FIXTURE_ANNOTATIONS = [
