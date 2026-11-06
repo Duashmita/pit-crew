@@ -1,5 +1,7 @@
 # pit-crew
 
+> This file was the frozen plan the parallel Claude Code lanes built against on Nov 6. The shipped UX moved on during the morning (one input instead of two tabs, a situation bar across the top, eight scenarios, live Ask mode); README.md describes what runs. The contracts below are still the API.
+
 Pit Crew. Code with Claude: Women in AI hackathon, Nov 6 2026. Track: Safety and rights.
 Submission (demo video + public repo) due 12:45. Feature freeze 12:00. Lanes stop adding at 11:30 (check `date`) and report.
 
@@ -139,4 +141,8 @@ Priya's phone (`components/shell/FriendPhone.tsx`): lock screen (time, soft grad
 Home gets a segmented control under the greeting: **Watch** | **Ask**. Watch is the observational state: everything above (chips, the car's data, alerts). Ask is the conversational state (`screens/Ask.tsx`, default `Ask({ onAlert })`): a chat thread inside Maya's phone. Input row at the bottom (above the SOS pill): a photo button (file input accept image/*, plus a "sample photo" button that loads /sample-engine.jpg when it exists), a text field "Tell it what's wrong", send. Photos are downscaled client-side to 1024 px max before sending as base64. Her bubble shows the photo. While the call runs, chat_tool events show as small "Reading the car…" chips under her bubble. Claude's reply is a bubble; when annotations come back, the photo bubble gets an SVG overlay (viewBox matches the image): coral boxes with numbered tags, and the reply's numbers match. If the response carries a triage that is not ok_to_drive, a compact coral strip appears above the input with the call and a [Tell Priya] button that calls onAlert (trigger verdict). A chip in the thread header says "live" or "offline demo" from the response mode. The AI notice stays on screen.
 
 ## gotchas
-append one line every time the orchestrator corrects a lane, so it doesn't happen twice.
+- uvicorn --reload does not reload on .env changes; restart it.
+- an org-level api key needs ANTHROPIC_WORKSPACE_ID in .env (sent as the anthropic-workspace-id header by agent/state.py).
+- car/state.json is shared; concurrent car tests and the click-through collide.
+- git add -A while a lane is mid-edit sweeps its half-done files into the commit.
+- port 5173 belongs to another project on this machine; the web app runs on 5174.
