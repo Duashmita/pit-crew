@@ -1,6 +1,6 @@
-import type { AckAction, AgentEvent, Alert, CarEvent, CarSnapshot, Diagnosis, FairPrice, Friend, GateResult, Quote, Settings, Shop, StepSpec, TriageResult } from '../types'
+import type { AckAction, AgentEvent, Alert, AskSeed, CarEvent, CarSnapshot, Diagnosis, FairPrice, Friend, GateResult, Quote, Settings, Shop, StepSpec, TriageResult } from '../types'
 
-export type Screen = 'home' | 'checking' | 'banner' | 'diagnosis' | 'step' | 'result' | 'diy' | 'shops' | 'inbox'
+export type Screen = 'home' | 'ask' | 'checking' | 'banner' | 'diagnosis' | 'step' | 'result' | 'diy' | 'shops' | 'inbox'
 export type OfferStatus = 'hidden' | 'shown' | 'sent' | 'declined'
 export interface CountdownState { kind: 'sos' | 'car_event'; seconds: number; event?: CarEvent }
 
@@ -26,13 +26,16 @@ export interface AppState {
   quotes: Quote[]
   settingsOpen: boolean
   chatTools: { tool: string; result: unknown }[]
+  words: string
+  askSeed: AskSeed | null
+  sentShop: string | null
 }
 
 export const initial: AppState = {
   screen: 'home', backendUp: false, mode: 'fixture', snapshot: null, log: [], busy: false,
   triage: null, diagnosis: null, step: null, stepBlocked: null,
   friends: [], settings: { share_location: true }, alerts: [], offer: 'hidden', lastAck: null, countdown: null,
-  fairPrice: null, shops: [], quotes: [], settingsOpen: false, chatTools: [],
+  fairPrice: null, shops: [], quotes: [], settingsOpen: false, chatTools: [], words: '', askSeed: null, sentShop: null,
 }
 
 export type Action =
@@ -50,7 +53,9 @@ export type Action =
   | { type: 'shops'; shops: Shop[] }
   | { type: 'quotes'; quotes: Quote[] }
   | { type: 'settingsOpen'; open: boolean }
-  | { type: 'ask' }
+  | { type: 'ask'; words: string }
+  | { type: 'openAsk'; seed: AskSeed | null }
+  | { type: 'sentShop'; name: string }
   | { type: 'chatClear' }
   | { type: 'reset' }
 
@@ -127,7 +132,9 @@ export function reduce(s: AppState, a: Action): AppState {
     case 'quotes': return { ...s, quotes: a.quotes }
     case 'settingsOpen': return { ...s, settingsOpen: a.open }
     case 'chatClear': return { ...s, chatTools: [] }
-    case 'ask': return { ...s, screen: 'checking', busy: true, log: [], triage: null, diagnosis: null, step: null, stepBlocked: null, offer: 'hidden', lastAck: null, quotes: [] }
+    case 'openAsk': return { ...s, screen: 'ask', askSeed: a.seed }
+    case 'sentShop': return { ...s, sentShop: a.name }
+    case 'ask': return { ...s, words: a.words, sentShop: null, screen: 'checking', busy: true, log: [], triage: null, diagnosis: null, step: null, stepBlocked: null, offer: 'hidden', lastAck: null, quotes: [] }
     case 'reset': return { ...initial, snapshot: s.snapshot, backendUp: s.backendUp, mode: s.mode, friends: s.friends, settings: s.settings }
   }
 }

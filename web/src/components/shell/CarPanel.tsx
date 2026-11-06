@@ -3,9 +3,12 @@ import type { CarSnapshot, Scenario } from '../../types'
 const SCEN: { id: Scenario; label: string }[] = [
   { id: 'misfire_before_swap', label: 'misfire' },
   { id: 'misfire_after_swap', label: 'after swap' },
+  { id: 'overheating', label: 'overheating' },
+  { id: 'gas_cap', label: 'loose gas cap' },
+  { id: 'flat_tire', label: 'flat tire' },
+  { id: 'weak_battery', label: 'weak battery' },
   { id: 'stall', label: 'stall' },
   { id: 'crash', label: 'crash' },
-  { id: 'ok', label: 'ok' },
 ]
 const CYL = ['1', '2', '3', '4'] as const
 
@@ -20,7 +23,7 @@ export default function CarPanel({ snapshot, up, onScenario }: { snapshot: CarSn
       <div className="muted small">2014 compact, inline-4, one coil per cylinder</div>
       <div className="scen">
         {SCEN.map((s) => (
-          <button key={s.id} className={st?.scenario === s.id ? 'on' : ''} onClick={() => onScenario(s.id)}>{s.label}</button>
+          <button key={s.id} className={st?.scenario === s.id ? 'on' : ''} onClick={() => onScenario(st?.scenario === s.id ? 'ok' : s.id)} title={st?.scenario === s.id ? 'click to switch off' : 'click to switch on'}>{s.label}</button>
         ))}
       </div>
       <div className="row" style={{ justifyContent: 'space-between', marginTop: 6 }}>
@@ -39,7 +42,7 @@ export default function CarPanel({ snapshot, up, onScenario }: { snapshot: CarSn
       </div>
       <div className="muted small" style={{ marginTop: 6 }}>misfires per cylinder</div>
       <div className={`chip ${up ? '' : 'down'}`} style={{ marginTop: 16 }}><span className="dot" />{up ? 'car server: connected' : 'backend starting'}</div>
-      {st && <div className="muted small" style={{ marginTop: 10 }}>coolant {st.coolant_c} °C, {st.dtc_count} stored {st.dtc_count === 1 ? 'code' : 'codes'}</div>}
+      {st && <div className="muted small" style={{ marginTop: 10 }}>coolant {st.coolant_c} °C{st.battery_v != null ? `, battery ${st.battery_v} V` : ''}, {st.dtc_count} stored {st.dtc_count === 1 ? 'code' : 'codes'}{st.warnings?.length ? `, ${st.warnings.join(', ')}` : ''}</div>}
     </div>
   )
 }

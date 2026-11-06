@@ -36,7 +36,7 @@ with sync_playwright() as p:
     step("banner: Don't drive + rule chip", banner)
 
     def send_alert():
-        page.get_by_role("button", name=re.compile(r"^send$|send to|tell priya", re.I)).first.click()
+        page.get_by_role("button", name=re.compile(r"just priya|^send$", re.I)).first.click()
         page.get_by_text(re.compile("on my way", re.I)).first.wait_for(timeout=8000); page.wait_for_timeout(800); shot("04-priya-alert")
     step("Send -> Priya's phone shows the alert", send_alert)
 
@@ -46,10 +46,10 @@ with sync_playwright() as p:
     step("On my way -> Maya sees the ack", ack)
 
     def diagnosis():
-        page.get_by_role("button", name=re.compile("see what", re.I)).first.click()
+        page.get_by_role("button", name=re.compile("learn how", re.I)).first.click()
         page.get_by_text(re.compile("likely causes|cheapest test", re.I)).first.wait_for(timeout=8000); page.wait_for_timeout(800); shot("06-diagnosis")
         assert page.locator("#cyl-1.misfiring, #cyl-1 .misfiring, .misfiring").first.is_visible(), "no misfiring cylinder"
-    step("See what's wrong -> diagnosis with pulsing cyl 1", diagnosis)
+    step("Learn how to fix it -> diagnosis with pulsing cyl 1", diagnosis)
 
     def stepplayer():
         page.get_by_role("button", name=re.compile("show me", re.I)).first.click()

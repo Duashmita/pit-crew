@@ -8,6 +8,7 @@ import SOS from './components/shell/SOS'
 import Countdown from './components/shell/Countdown'
 import Settings from './components/shell/Settings'
 import Home from './screens/Home'
+import Ask from './screens/Ask'
 import Checking, { Log } from './screens/Checking'
 import Diagnosis from './screens/Diagnosis'
 import StepPlayer from './screens/StepPlayer'
@@ -29,7 +30,18 @@ export default function App() {
   let screen: ReactNode
   switch (s.screen) {
     case 'home':
-      screen = <Home up={s.backendUp} onAsk={actions.ask} onSettings={actions.openSettings} onAlert={actions.tellFriend} tools={s.chatTools} onChatStart={actions.chatClear} />
+      screen = <Home up={s.backendUp} onAsk={actions.ask} onOpenAsk={actions.openAsk} onSettings={actions.openSettings} />
+      break
+    case 'ask':
+      screen = (
+        <div className="ask-wrap">
+          <div className="row" style={{ padding: '8px 18px 0', justifyContent: 'space-between' }}>
+            <button className="btn ghost sm" onClick={actions.reset}>← Home</button>
+            <button className="btn ghost sm" onClick={() => actions.ask(s.askSeed?.context?.words || s.askSeed?.text || s.words || 'the car is acting up')}>Check the car</button>
+          </div>
+          <Ask key={s.askSeed?.text ?? ''} seed={s.askSeed} onAlert={actions.tellFriend} tools={s.chatTools} onStart={actions.chatClear} />
+        </div>
+      )
       break
     case 'checking':
       screen = <Checking log={s.log} busy={s.busy} up={s.backendUp} />
@@ -38,10 +50,14 @@ export default function App() {
       screen = (
         <div className="phone-body">
           {s.triage && <SafetyBanner triage={s.triage} />}
-          <AlertOffer friends={s.friends} shareLocation={s.settings.share_location} status={s.offer} sentAlert={sentAlert} ack={s.lastAck} onSend={actions.sendOffer} onDecline={actions.declineOffer} />
-          <button className="btn block" style={{ marginTop: 14 }} onClick={() => actions.go('diagnosis')} disabled={!s.diagnosis}>
-            {s.diagnosis ? "See what's wrong" : 'Working out what is wrong…'}
-          </button>
+          <AlertOffer friends={s.friends} shareLocation={s.settings.share_location} status={s.offer} sentAlert={sentAlert} ack={s.lastAck} onSend={actions.sendOffer} onDecline={actions.declineOffer} call={s.triage?.call ?? null} sentShop={s.sentShop} onSendBoth={actions.sendBoth} />
+          <div className="row" style={{ marginTop: 14, gap: 8 }}>
+            <button className="btn block" style={{ flex: 1 }} onClick={() => actions.go('diagnosis')} disabled={!s.diagnosis}>
+              {s.diagnosis ? 'Learn how to fix it' : 'Working it out…'}
+            </button>
+            <button className="btn block" style={{ flex: 1 }} onClick={() => actions.go('shops')}>Find a shop</button>
+          </div>
+          <button className="btn ghost block" style={{ marginTop: 8 }} onClick={actions.askFollowUp}>Ask a follow-up</button>
           <div className="h2" style={{ marginTop: 24 }}>What the car said</div>
           <Log log={s.log} />
           <div className="ai-notice">AI was used.</div>

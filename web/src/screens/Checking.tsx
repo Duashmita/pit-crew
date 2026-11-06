@@ -13,7 +13,7 @@ function summarize(tool: string, result: unknown): string {
   try {
     switch (tool) {
       case 'get_status': return `${r.mil_on ? 'check-engine light on' : 'no warning light'}, ${r.dtc_count} ${r.dtc_count === 1 ? 'code' : 'codes'}, ${r.rpm} rpm, ${r.coolant_c} °C`
-      case 'read_dtcs': return Array.isArray(r) && r.length ? r.map((d) => `${d.code} ${d.desc}`).join('; ') : 'no stored codes'
+      case 'read_dtcs': return Array.isArray(r) && r.length ? r.map((d) => `${d.code} (${d.desc})`).join('; ') : 'no stored codes'
       case 'misfire_counts': return Object.entries(r).map(([k, v]) => `cyl ${k}: ${v}`).join(', ')
       case 'freeze_frame': return `${r.code} at ${r.rpm} rpm, ${r.coolant_c} °C, load ${r.load_pct}%`
       case 'read_pid': return `${r.name} ${r.value} ${r.unit}`

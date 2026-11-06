@@ -1,6 +1,6 @@
 // contracts: mirrors CLAUDE.md. change only there.
-export type Scenario = 'misfire_before_swap' | 'misfire_after_swap' | 'stall' | 'crash' | 'ok'
-export interface CarStatus { mil_on: boolean; dtc_count: number; rpm: number; speed_kph: number; coolant_c: number; engine_running: boolean; scenario: Scenario }
+export type Scenario = 'misfire_before_swap' | 'misfire_after_swap' | 'overheating' | 'gas_cap' | 'flat_tire' | 'weak_battery' | 'stall' | 'crash' | 'ok'
+export interface CarStatus { mil_on: boolean; dtc_count: number; rpm: number; speed_kph: number; coolant_c: number; engine_running: boolean; scenario: Scenario; warnings?: string[]; battery_v?: number }
 export interface Dtc { code: string; desc: string }
 export type MisfireCounts = Record<'1' | '2' | '3' | '4', number>
 export interface CarEvent { type: 'engine_stall' | 'airbag_deployed'; speed_kph?: number; at: string }
@@ -42,3 +42,6 @@ export type AgentEvent =
   | { type: 'quote'; quote: Quote }
   | { type: 'chat_tool'; tool: string; result: unknown }
   | { type: 'chat_reply'; reply: string; annotations: Annotation[]; mode: 'live' | 'fixture' }
+export interface Photo { dataUrl: string; data: string; media_type: 'image/jpeg'; w: number; h: number }
+/** what opens the Ask thread: a first message to send, or the context of a check already done (her words and the call) */
+export interface AskSeed { text: string; photo?: Photo | null; context?: { words: string; call: Call } }

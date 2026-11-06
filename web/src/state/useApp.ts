@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react'
 import { api } from '../lib/api'
 import { initial, reduce, type Screen } from './machine'
-import type { AckAction, Scenario } from '../types'
+import type { AckAction, AskSeed, Photo, Scenario } from '../types'
 
 export function useApp() {
   const [s, dispatch] = useReducer(reduce, initial)
@@ -38,7 +38,7 @@ export function useApp() {
     const friendName = () => ref.current.friends[0]?.name ?? 'Priya'
     return {
       ask: async (words: string) => {
-        dispatch({ type: 'ask' })
+        dispatch({ type: 'ask', words })
         try {
           const r = await api.diagnose(words)
           if (!ref.current.triage) r.events.forEach((e) => dispatch({ type: 'event', event: e }))
@@ -49,6 +49,22 @@ export function useApp() {
       scenario: (name: Scenario) => api.setScenario(name).then((snap) => dispatch({ type: 'snapshot', snapshot: snap })).catch(() => {}),
       sendOffer: async (include: boolean) => {
         try { dispatch({ type: 'alert', alert: await api.alert('verdict', include) }) } catch { /* backend not ready */ }
+      },
+      openAsk: (text: string, photo: Photo | null = null) => dispatch({ type: 'openAsk', seed: { text, photo } }),
+      askFollowUp: () => {
+        const { words, triage } = ref.current
+        const seed: AskSeed = { text: '', context: { words: words || 'the car is acting up', call: triage?.call ?? 'stop_now' } }
+        dispatch({ type: 'openAsk', seed })
+      },
+      /** stop_now: tell Priya and send the quote request to the nearest shop in one tap */
+      sendBoth: async (include: boolean) => {
+        try {
+          dispatch({ type: 'alert', alert: await api.alert('verdict', include) })
+          const shops = ref.current.shops.length ? ref.current.shops : await api.shops()
+          dispatch({ type: 'shops', shops })
+          const nearest = [...shops].sort((a, b) => a.distance_km - b.distance_km)[0]
+          if (nearest) { await api.send([nearest.id]); dispatch({ type: 'sentShop', name: nearest.name }) }
+        } catch { /* backend not ready */ }
       },
       declineOffer: () => dispatch({ type: 'offer', status: 'declined' }),
       sos: () => dispatch({ type: 'countdown', countdown: { kind: 'sos', seconds: 3 } }),

@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { api } from '../lib/api'
 import { callWords } from '../components/shell/words'
 import PhotoAnnotated from '../components/shell/PhotoAnnotated'
-import type { Annotation, ChatImage, ChatMessage, TriageResult } from '../types'
+import type { Annotation, AskSeed, ChatImage, ChatMessage, Photo, TriageResult } from '../types'
 
-interface Photo { dataUrl: string; data: string; media_type: 'image/jpeg'; w: number; h: number }
 interface Bubble { role: 'user' | 'assistant'; content: string; photo?: Photo; annotations?: Annotation[]; error?: boolean }
 export interface ToolChip { tool: string; result: unknown }
 
 const TOOL_WORDS: Record<string, string> = { get_status: 'Reading the warning lights', read_dtcs: 'Reading the codes', misfire_counts: 'Counting misfires', events: 'Checking for crash or stall', triage: 'Asking the rulebook', annotate_photo: 'Marking up the photo' }
 
 /** downscale to 1024 px on the long edge, jpeg 0.85, so a phone photo is a small upload */
-async function shrink(file: Blob): Promise<Photo> {
+export async function shrink(file: Blob): Promise<Photo> {
   const url = URL.createObjectURL(file)
   try {
     const img = await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url })
@@ -24,8 +23,12 @@ async function shrink(file: Blob): Promise<Photo> {
   } finally { URL.revokeObjectURL(url) }
 }
 
-export default function Ask({ onAlert, tools = [], onStart }: { onAlert: () => void | Promise<void>; tools?: ToolChip[]; onStart?: () => void }) {
-  const [thread, setThread] = useState<Bubble[]>([])
+export default function Ask({ onAlert, tools = [], onStart, seed = null }: { onAlert: () => void | Promise<void>; tools?: ToolChip[]; onStart?: () => void; seed?: AskSeed | null }) {
+  // a check already done seeds the thread with her words and the call, so a follow-up has its context
+  const [thread, setThread] = useState<Bubble[]>(seed?.context
+    ? [{ role: 'user', content: seed.context.words }, { role: 'assistant', content: `The rulebook says ${callWords(seed.context.call).toLowerCase()}. Ask me anything about it.` }]
+    : [])
+  const seeded = useRef(false)
   const [text, setText] = useState('')
   const [photo, setPhoto] = useState<Photo | null>(null)
   const [busy, setBusy] = useState(false)
@@ -36,13 +39,16 @@ export default function Ask({ onAlert, tools = [], onStart }: { onAlert: () => v
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => { fetch('/sample-engine.jpg', { method: 'HEAD' }).then((r) => setSample(r.ok && (r.headers.get('content-type') ?? '').startsWith('image'))).catch(() => {}) }, [])
+  // a first message from home is sent as soon as the thread opens (once, StrictMode-safe)
+  useEffect(() => { if (!seeded.current && seed && !seed.context && (seed.text || seed.photo)) { seeded.current = true; send(seed.text, seed.photo ?? null) } }, [])  // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, [thread.length, busy, tools.length])
 
   const pick = async (file: Blob | null) => { if (file) { try { setPhoto(await shrink(file)) } catch { /* not an image */ } } }
   const useSample = async () => { try { await pick(await (await fetch('/sample-engine.jpg')).blob()) } catch { /* missing */ } }
 
-  const send = async () => {
-    const words = text.trim()
+  const send = async (wordsIn: string = text, photoIn: Photo | null = photo) => {
+    const words = wordsIn.trim()
+    const photo = photoIn
     if ((!words && !photo) || busy) return
     const mine: Bubble = { role: 'user', content: words || 'What do you see in this photo?', photo: photo ?? undefined }
     const history: ChatMessage[] = [...thread.filter((b) => !b.error).map((b) => ({ role: b.role, content: b.content })), { role: 'user', content: mine.content }]
@@ -102,7 +108,7 @@ export default function Ask({ onAlert, tools = [], onStart }: { onAlert: () => v
         </button>
         {sample && <button className="btn ghost sm" onClick={useSample} title="Use the sample engine-bay photo">sample</button>}
         <input className="ask-text" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') send() }} placeholder="Tell it what's wrong" aria-label="Tell it what's wrong" />
-        <button className="btn ok sm" disabled={busy || (!text.trim() && !photo)} onClick={send} aria-label="Send">Send</button>
+        <button className="btn ok sm" disabled={busy || (!text.trim() && !photo)} onClick={() => send()} aria-label="Send">Send</button>
       </div>
       <div className="ai-notice" style={{ marginTop: 6 }}>AI was used. Live answers come from Claude; the safety call still comes from the rulebook.</div>
     </div>
