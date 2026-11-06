@@ -20,8 +20,8 @@ const mapTile = (
 
 function body(a: Alert): string {
   const fault = a.fault && a.fault !== 'unknown' ? ` ${a.fault}.` : ''
-  if (a.trigger === 'crash') return `Possible crash. Her airbag went off.${fault}`
-  if (a.trigger === 'stall') return `Her engine stalled while driving.${fault}`
+  if (a.trigger === 'crash') return 'Possible crash. Her airbag went off.'
+  if (a.trigger === 'stall') return 'Her engine stalled while driving.'
   if (a.trigger === 'sos') return `She pressed SOS.${fault}`
   return `Her car says ${callWords(a.call).toLowerCase()}.${fault}`
 }
