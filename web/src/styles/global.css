@@ -1,0 +1,13 @@
+/* design tokens: the ux spec in CLAUDE.md. web-shell extends this file; everyone uses the variables. */
+:root {
+  --ink: #0E1116; --panel: #161B22; --panel-2: #1D2430; --line: rgba(255,255,255,0.12);
+  --text: #F2F4F7; --muted: #9AA4B2;
+  --danger: #FF5A4E; --caution: #FFB547; --ok: #2BD9C8; --accent: #7C9CFF;
+  --radius: 16px; --radius-sm: 10px; --shadow: 0 12px 40px rgba(0,0,0,0.45);
+  --font: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease: 200ms cubic-bezier(.2,.8,.2,1);
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--ink); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+button { font: inherit; }
