@@ -179,8 +179,9 @@ textarea.ask::placeholder { color: var(--muted); }
 
 /* situation bar: the simulated car's state sits on top, across the stage */
 .situation { padding: 14px 24px 0; }
-.situation .carpanel { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; padding: 14px 18px; }
+.situation .carpanel { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 22px; padding: 14px 18px; }
+@media (max-width: 1100px) { .situation .carpanel { grid-template-columns: 1fr; } }
 .situation .carpanel .scen { margin: 10px 0 0; }
-.situation .carpanel .live { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.situation .carpanel .live { display: flex; align-items: center; gap: 18px; }
 .situation .carpanel .rpm { font-size: 30px; }
 .situation .bars { height: 44px; width: 120px; margin-top: 0; gap: 6px; }
