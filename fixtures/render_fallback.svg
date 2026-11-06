@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img" aria-label="step diagram">
+  <style>
+    .part { fill: #1D2430; stroke: #F2F4F7; stroke-width: 2; }
+    .label { font: 600 13px system-ui, sans-serif; fill: #F2F4F7; }
+    .muted { font: 500 11px system-ui, sans-serif; fill: #9AA4B2; }
+    .arrow { stroke: #FFB547; stroke-width: 3; fill: none; marker-end: url(#tip); }
+    .move { animation: nudge 2.5s ease-in-out infinite; }
+    @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  </style>
+  <defs><marker id="tip" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#FFB547"/></marker></defs>
+  <rect width="400" height="300" fill="#161B22"/>
+  <rect x="60" y="150" width="280" height="90" rx="10" class="part"/>
+  <text x="200" y="200" text-anchor="middle" class="label">engine</text>
+  <g class="move"><rect x="120" y="90" width="50" height="50" rx="8" class="part"/><text x="145" y="120" text-anchor="middle" class="label">part</text></g>
+  <path d="M190 115 L260 115" class="arrow"/>
+  <text x="200" y="60" text-anchor="middle" class="label">follow the step on screen</text>
+  <text x="200" y="285" text-anchor="middle" class="muted">diagram, not to scale</text>
+</svg>

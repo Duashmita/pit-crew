@@ -1,0 +1,6 @@
+{"type":"text","text":"Let me ask the car what it knows."}
+{"type":"tool_call","tool":"get_status","args":{}}
+{"type":"tool_call","tool":"read_dtcs","args":{}}
+{"type":"triage"}
+{"type":"diagnosis","causes":[{"cause":"nothing stored","evidence":["no warning light","no codes"],"confidence":0.8}],"summary":"The car isn't reporting anything. If it keeps happening, note when (cold start, braking, speed) and ask again."}
+{"type":"done"}

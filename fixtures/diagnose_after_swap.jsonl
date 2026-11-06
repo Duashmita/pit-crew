@@ -1,0 +1,7 @@
+{"type":"text","text":"Reading the car again after the swap."}
+{"type":"tool_call","tool":"read_dtcs","args":{}}
+{"type":"tool_call","tool":"misfire_counts","args":{}}
+{"type":"triage"}
+{"type":"diagnosis","causes":[{"cause":"ignition coil (originally on cylinder 1)","evidence":["P0302 after the swap","the misfire moved from cylinder 1 to cylinder 2","11 misfires on cylinder 2, cylinder 1 now clean"],"confidence":0.92},{"cause":"spark plug 1","evidence":["didn't move with the coil"],"confidence":0.05},{"cause":"fuel injector 1","evidence":["didn't move with the coil"],"confidence":0.03}],"summary":"the misfire followed the coil, so it's the ignition coil from cylinder 1"}
+{"type":"step","spec":{"id":"replace-coil-1","title":"replace the faulty ignition coil","parts":["ignition coil","coil connector","coil bolt"],"actions":[{"verb":"unclip","target":"coil connector"},{"verb":"remove","target":"coil bolt"},{"verb":"lift","target":"old coil"},{"verb":"seat","target":"new coil"},{"verb":"reinstall","target":"bolt and connector"}],"tools":["10 mm socket"],"precautions":["engine_off","engine_cool"],"expect":"no misfire on any cylinder","est_minutes":15,"cost_usd":null}}
+{"type":"done"}

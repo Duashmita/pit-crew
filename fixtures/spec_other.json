@@ -1,0 +1,1 @@
+{"id":"check-vacuum-hose","title":"check the brake booster vacuum hose","parts":["vacuum hose","intake manifold"],"actions":[{"verb":"trace","target":"vacuum hose from the booster to the intake"},{"verb":"squeeze","target":"hose along its length"}],"tools":["flashlight"],"precautions":["engine_off"],"expect":"a cracked or soft section","est_minutes":5,"cost_usd":0}

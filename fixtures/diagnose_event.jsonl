@@ -1,0 +1,7 @@
+{"type":"text","text":"Checking what the car reported."}
+{"type":"tool_call","tool":"get_status","args":{}}
+{"type":"tool_call","tool":"events","args":{}}
+{"type":"tool_call","tool":"read_dtcs","args":{}}
+{"type":"triage"}
+{"type":"diagnosis","causes":[{"cause":"the car reported a safety event","evidence":["engine not running","event logged by the car"],"confidence":0.9},{"cause":"ignition or fuel delivery fault behind it","evidence":["stored misfire code"],"confidence":0.1}],"summary":"This is not a roadside fix. Get yourself somewhere safe first; the car needs a tow and an inspection."}
+{"type":"done"}
