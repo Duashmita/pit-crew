@@ -12,6 +12,14 @@ Pit Crew talks to the car's own computer, makes the safety call from a checkable
 
 Maya, the car, the shops and the friends are synthetic. The screen says so.
 
+## Screens
+
+![The stage: Maya's phone with the safety call and Priya's phone with the alert](docs/stage.png)
+
+![Diagnosis: the engine diagram with cylinder 1 misfiring and the ranked causes](docs/diagnosis.png)
+
+![Inbox: three quotes, one flagged above the fair range](docs/inbox.png)
+
 ## Demo video
 
 VIDEO_LINK_HERE (under 3 minutes)

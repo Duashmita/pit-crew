@@ -41,7 +41,7 @@ export default function AlertOffer({ friends, shareLocation, status, sentAlert, 
       )}
       <div className="actions">
         <button className="btn primary block" onClick={() => onSend(shareLocation && include)} disabled={!names.length}>Send</button>
-        <button className="btn ghost" onClick={onDecline}>Not now</button>
+        <button className="btn ghost" style={{ whiteSpace: "nowrap" }} onClick={onDecline}>Not now</button>
       </div>
     </div>
   )
