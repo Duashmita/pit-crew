@@ -29,7 +29,7 @@ export default function App() {
   let screen: ReactNode
   switch (s.screen) {
     case 'home':
-      screen = <Home up={s.backendUp} onAsk={actions.ask} onSettings={actions.openSettings} />
+      screen = <Home up={s.backendUp} onAsk={actions.ask} onSettings={actions.openSettings} onAlert={actions.tellFriend} tools={s.chatTools} onChatStart={actions.chatClear} />
       break
     case 'checking':
       screen = <Checking log={s.log} busy={s.busy} up={s.backendUp} />

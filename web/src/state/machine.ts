@@ -25,13 +25,14 @@ export interface AppState {
   shops: Shop[]
   quotes: Quote[]
   settingsOpen: boolean
+  chatTools: { tool: string; result: unknown }[]
 }
 
 export const initial: AppState = {
   screen: 'home', backendUp: false, mode: 'fixture', snapshot: null, log: [], busy: false,
   triage: null, diagnosis: null, step: null, stepBlocked: null,
   friends: [], settings: { share_location: true }, alerts: [], offer: 'hidden', lastAck: null, countdown: null,
-  fairPrice: null, shops: [], quotes: [], settingsOpen: false,
+  fairPrice: null, shops: [], quotes: [], settingsOpen: false, chatTools: [],
 }
 
 export type Action =
@@ -50,6 +51,7 @@ export type Action =
   | { type: 'quotes'; quotes: Quote[] }
   | { type: 'settingsOpen'; open: boolean }
   | { type: 'ask' }
+  | { type: 'chatClear' }
   | { type: 'reset' }
 
 function addAlert(s: AppState, alert: Alert): AppState {
@@ -100,6 +102,10 @@ function onEvent(s: AppState, e: AgentEvent): AppState {
     }
     case 'quote':
       return s.quotes.some((q) => q.id === e.quote.id) ? s : { ...s, quotes: [...s.quotes, e.quote] }
+    case 'chat_tool':
+      return { ...s, chatTools: [...s.chatTools, { tool: e.tool, result: e.result }] }
+    case 'chat_reply':
+      return { ...s, chatTools: [] }
   }
   return s
 }
@@ -120,6 +126,7 @@ export function reduce(s: AppState, a: Action): AppState {
     case 'shops': return { ...s, shops: a.shops }
     case 'quotes': return { ...s, quotes: a.quotes }
     case 'settingsOpen': return { ...s, settingsOpen: a.open }
+    case 'chatClear': return { ...s, chatTools: [] }
     case 'ask': return { ...s, screen: 'checking', busy: true, log: [], triage: null, diagnosis: null, step: null, stepBlocked: null, offer: 'hidden', lastAck: null, quotes: [] }
     case 'reset': return { ...initial, snapshot: s.snapshot, backendUp: s.backendUp, mode: s.mode, friends: s.friends, settings: s.settings }
   }

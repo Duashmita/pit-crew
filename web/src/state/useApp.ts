@@ -86,6 +86,10 @@ export function useApp() {
         dispatch({ type: 'settings', settings: { share_location: on } })
         try { dispatch({ type: 'settings', settings: await api.setSettings({ share_location: on }) }) } catch { /* keep local */ }
       },
+      tellFriend: async () => {
+        try { dispatch({ type: 'alert', alert: await api.alert('verdict', ref.current.settings.share_location) }) } catch { /* backend not ready */ }
+      },
+      chatClear: () => dispatch({ type: 'chatClear' }),
       openSettings: () => dispatch({ type: 'settingsOpen', open: true }),
       closeSettings: () => dispatch({ type: 'settingsOpen', open: false }),
       onSent: () => dispatch({ type: 'go', screen: 'inbox' }),
