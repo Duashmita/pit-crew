@@ -43,7 +43,8 @@ flowchart LR
   agent -- sse --> web[web/ two phone frames]
 ```
 
-- **Two input states.** *Watch* is observational: Pit Crew reads the car and alerts her without being asked. *Ask* is conversational and live: she tells it what is wrong in her own words, attaches a photo, and Claude answers, reads the car mid-conversation when it needs to, and annotates the photo with numbered boxes.
+- **One input, two behaviors.** She says what is wrong in her own words, with a photo if she has one. A symptom runs the observational path: Pit Crew reads the car and the rulebook makes the safety call, then she chooses to learn how to fix it, find a shop, or tell her people and the nearest shop. A question or a photo runs the live conversational path: Claude answers, reads the car mid-conversation when it needs to, and annotates the photo with numbered boxes.
+- **Scenarios she can flip on the car.** Misfire before and after the coil swap, overheating, a loose gas cap (the fix she can do herself), a flat tire, a weak battery, a stall and a crash. The rulebook's call changes with each one.
 - **The car is an MCP server.** `car/server.py` exposes the car's computer as tools over stdio. Any Claude client can talk to it: `claude mcp add car -- .venv/bin/python -m car.server`. In the demo the car is a mock with five scenarios (misfire before and after the coil swap, stall, crash, ok).
 - **Claude questions the car like a mechanic.** The loop reads the warning lights and codes, then picks each next query from the evidence (misfire counts, freeze frame, fuel trims), ranks the causes and proposes the cheapest test that separates them, as a strict-schema step spec.
 - **The rulebook makes the safety call, not Claude.** `triage/triage.pl` turns published warning-light guidance into Prolog rules, each cited to the text in `sources/`, with plunit tests. The UI shows the rule that fired and its source. Unknown critical signals count as unsafe.

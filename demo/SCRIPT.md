@@ -1,20 +1,17 @@
-# Pit Crew demo script, 2:40
+# Pit Crew demo script, about 2:50
 
-Record at 1440x900 with Cmd+Shift+5, mic close, two takes at most. Say "simulated" once near the start. Short spoken sentences.
+Record at 1440x900 with Cmd+Shift+5, mic close, two takes at most. Say "simulated" once near the start. Short spoken sentences. The car panel on the left is the scenario switch: click a pill to flip a fault on, click it again to turn it off.
 
 | Time | On screen | Say |
 | --- | --- | --- |
-| 0:00 | The stage: Maya's phone, Priya's phone, the simulated car panel. Persona card. | "Maya is a home health aide. Her car is how she gets to work. Tonight it's shaking at a light and the check-engine light is flashing. Everything here is simulated." |
-| 0:12 | Tap the chip "It's shaking and the light is blinking". Tool-call cards stream: warning lights, codes, misfire counts. | "Pit Crew talks to the car's own computer through an MCP server. Claude reads the lights, the codes, the misfire counts, and picks each next question from what it sees." |
-| 0:32 | The safety banner: DON'T DRIVE, the rule chip and its source. | "The safety call doesn't come from Claude. It comes from a rulebook written from the manufacturer's own warning-light guidance, and it shows the rule that fired." |
-| 0:45 | The alert offer. Tap Send. Priya's phone lights up: the verdict, the fault, the pin. Tap On my way. Maya's card: "Priya is on her way". | "The moment it's not safe to drive, her people know where she is. Location is optional. Priya taps once, and Maya knows help is coming." |
-| 1:05 | Tap See what's wrong. Engine diagram, cylinder 1 pulsing. Causes ranked. Cheapest test card. Tap Show me. | "Cylinder one is misfiring. The cheapest test is to swap two coils. Costs nothing." |
-| 1:20 | Step player: tick Engine off and Engine cool, the rulebook check turns green, the coil swap animates. Tap I did it. | "Every step is a spec the rules checked before anything is drawn. Engine off, engine cool, then the swap." |
-| 1:38 | The glow moves to cylinder 2. The card: the misfire followed the coil. Fair price with sources. | "The misfire followed the coil. It's a forty-dollar part, not a mystery." (use the number on screen) |
-| 1:40 | Tap Ask. Attach the sample photo, type "which one is the coil?", send. Claude's reply arrives live and the photo gets numbered boxes. | "And she can just ask. A photo of the engine bay, a question in her own words, and Claude points at the parts, live." |
-| 1:52 | Tap Find a shop. Three shops. Draft request shows the code, the test result and the fair range. Approve and send. | "If she'd rather not do it herself, she asks three shops, and the request already states the fault, her test result and the fair price." |
-| 2:08 | Inbox: three replies arrive, one flagged above the fair range. | "One quote comes back at double. Flagged. In the study behind this, women who named a market price got quoted the same as men. Pit Crew names it every time." |
-| 2:25 | README diagram. | "The car is an MCP server. Prolog makes the safety call. Every animation comes from a checked spec. Built this morning with Claude Code, six lanes in parallel." |
-| 2:35 | Back to the stage, Priya's phone. | "She's never stranded alone, and she never walks into a shop uninformed." |
-
-Backup beat if time allows: car panel, tap Crash. The countdown. Let it run out. Priya's phone: possible crash.
+| 0:00 | The stage: Maya's phone, Priya's phone, the simulated car with its scenario pills. | "Maya is a home health aide. Her car is how she gets to work. Everything here is simulated, except Claude." |
+| 0:10 | Pill: misfire. In the one input type "it's shaking and the light is blinking". Send. Tool-call cards stream. | "One box. She says what's wrong in her own words. Pit Crew reads the car's own computer through an MCP server: the warning lights, the stored code, the misfire counts." |
+| 0:30 | The banner: DON'T DRIVE, the rule chip and its source. Under it: Learn how to fix it, Find a shop, and the offer to tell Priya and the nearest shop. | "The safety call does not come from Claude. It comes from a rulebook written from manufacturers' own warning-light guidance, with the rule that fired. And every answer ends in a choice: learn to fix it, find a shop, or tell her people." |
+| 0:48 | Tap Send both. Priya's phone lights up with the verdict, the fault and the pin. Tap On my way. Maya's card updates. | "When it is not safe to drive, the people she chose know where she is, and the nearest shop already has the request. Priya taps once and Maya knows help is coming." |
+| 1:05 | Tap Learn how to fix it. The engine diagram with cylinder 1 pulsing, the ranked causes, the cheapest test. Tap Show me, tick the two precautions, the coil swap animates, tap I did it. | "Cylinder one. The cheapest test is to swap two coils, and the rulebook checks the precautions before anything is drawn." |
+| 1:30 | The glow moves to cylinder 2. The fair price with sources. | "The misfire followed the coil. It is a forty-dollar part, not a mystery." (use the number on screen) |
+| 1:42 | Tap Find a shop, pick three, approve the draft, the inbox fills, one flagged. | "Three shops get the fault, her test result and the fair price. One quote comes back at double. Flagged. In the study behind this, women who named a market price were quoted the same as men. Pit Crew names it every time." |
+| 2:05 | Pill: loose gas cap. Type "the light came on but it drives fine". Send. Live: Claude reads the car and the rulebook says OK to drive, one step she can do herself. | "A different fault. The rulebook says it is fine to drive, and this one she can fix herself: tighten the cap." |
+| 2:22 | Type a question with a photo attached: "which one is the coil?" Claude's live reply arrives and the photo gets numbered boxes. | "And she can just ask. A photo, a question in her own words, and Claude points at the parts, live." |
+| 2:38 | Pill: crash. The countdown. Let it run out. Priya's phone: possible crash. | "If the car reports a crash, her people know in ten seconds unless she says she is OK." |
+| 2:48 | Back to the stage. | "She is never stranded alone, and she never walks into a shop uninformed." |
