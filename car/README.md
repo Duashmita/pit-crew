@@ -24,3 +24,14 @@ MCP server (stdio), so any Claude client can talk to the car:
 ```bash
 claude mcp add car -- /Users/duashmi/Documents/Anthropic-Hack/pit-crew/.venv/bin/python -m car.server
 ```
+
+## more scenarios (small fixes and warnings that are not a misfire)
+
+`get_status()` also returns `warnings` (list: temperature, tire_pressure, charging) and `battery_v` (12.6 unless the scenario says otherwise).
+
+| scenario | light | codes | warnings | other |
+| --- | --- | --- | --- | --- |
+| overheating | on | P0217 engine coolant over temperature | temperature | coolant 118 C |
+| gas_cap | on, steady | P0457 evaporative leak, fuel cap loose or off | none | the fix is tightening the cap |
+| flat_tire | off | none | tire_pressure | |
+| weak_battery | off | P0562 system voltage low | charging | battery_v 11.6 |

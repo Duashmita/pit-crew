@@ -168,8 +168,8 @@ def flashing_from_words(words: str) -> str:
     w = words.lower()
     if re.search(r"blink|flash", w):
         return "yes"
-    if re.search(r"steady|solid|stays on|not flashing", w):
-        return "no"
+    if re.search(r"steady|solid|stays on|not flashing|came on|is on|light on|lit up|light's on", w):
+        return "no"  # a light described as simply "on" is steady; a flashing one gets called blinking or flashing
     return "unknown"
 
 
